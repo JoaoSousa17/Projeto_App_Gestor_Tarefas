@@ -30,8 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  supabase: ^1.7.8
-  http: ^0.13.3
+  supabase: ^2.3.0  # Atualizar para a versão mais recente
+  http: ^1.2.2      # Atualizar para a versão mais recente do http
+
 
 
   # The following adds the Cupertino Icons font to your application.
