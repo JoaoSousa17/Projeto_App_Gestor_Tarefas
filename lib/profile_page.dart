@@ -3,6 +3,7 @@ import 'supabase_service.dart';
 import 'bottom_menu.dart';
 import 'add_task_page.dart';
 import 'remove_task_page.dart';
+import 'edit_profile_page.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -146,11 +147,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   'Editar Perfil',
                   Icons.edit,
                   () {
-                    // Navegação para a página de edição de perfil
-                    // Implementar quando a página de edição de perfil estiver pronta
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Funcionalidade de edição de perfil ainda não implementada')),
-                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EditProfilePage()),
+                    ).then((_) => _buscarPerfil()); // Atualiza o perfil após retornar
                   },
                 ),
                 _buildActionButton(

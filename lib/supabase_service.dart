@@ -160,6 +160,22 @@ class SupabaseService {
     }
   }
 
+  Future<void> atualizarPerfil(String nome, String email, String fotoUrl) async {
+    try {
+      final user = supabaseClient.auth.currentUser;
+      if (user == null) throw Exception('Usuário não autenticado');
+
+      await supabaseClient.from('perfil').update({
+        'nome': nome,
+        'email': email,
+        'avatar_url': fotoUrl,
+      }).eq('id', user.id);
+    } catch (e) {
+      print('Erro ao atualizar perfil: $e');
+      rethrow;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> buscarTarefasDisponiveis() async {
     try {
       final response = await supabaseClient
