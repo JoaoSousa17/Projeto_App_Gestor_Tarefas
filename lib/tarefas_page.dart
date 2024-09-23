@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'supabase_service.dart';
-import 'top_menu.dart';
 import 'options_page.dart';
+import 'bottom_menu.dart';
 
 class TarefasPage extends StatefulWidget {
   final String? data;
@@ -160,6 +160,89 @@ class _TarefasPageState extends State<TarefasPage> with SingleTickerProviderStat
     );
   }
 
+  Widget _buildEmptyTaskMessage() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.celebration,
+            size: 80,
+            color: Colors.yellow,
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Parabéns!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Concluíste todas as tarefas de hoje!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+   Widget _buildNoCompletedTasksMessage() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.red,
+            ),
+            padding: EdgeInsets.all(20),
+            child: Icon(
+              Icons.close,
+              size: 60,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Ainda não completaste',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            'qualquer tarefa hoje!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Que tal começar agora?',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> tarefasNaoRealizadas = [];
@@ -175,20 +258,12 @@ class _TarefasPageState extends State<TarefasPage> with SingleTickerProviderStat
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Tarefas'),
+        backgroundColor: Colors.black,
+      ),
       body: Column(
         children: [
-          TopMenu(
-            avatarUrl: perfilUsuario['avatar_url'] ?? '',
-            nome: perfilUsuario['nome'] ?? 'Jogador',
-            nivel: perfilUsuario['nivel'] ?? 1,
-            pontuacaoTotal: perfilUsuario?['pontuacao'] ?? 0,
-            onOptionsPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => OptionsPage()),
-              ).then((_) => _buscarDados());
-            },
-          ),
           TabBar(
             controller: _tabController,
             tabs: [
@@ -202,14 +277,14 @@ class _TarefasPageState extends State<TarefasPage> with SingleTickerProviderStat
               children: [
                 // Lista de tarefas não realizadas
                 tarefasNaoRealizadas.isEmpty
-                    ? Center(child: Text('Nenhuma tarefa pendente', style: TextStyle(color: Colors.white)))
+                    ? _buildEmptyTaskMessage()
                     : ListView.builder(
                         itemCount: tarefasNaoRealizadas.length,
                         itemBuilder: (context, index) => _buildTarefaItem(tarefasNaoRealizadas[index], false),
                       ),
                 // Lista de tarefas realizadas
                 tarefasRealizadas.isEmpty
-                    ? Center(child: Text('Nenhuma tarefa realizada', style: TextStyle(color: Colors.white)))
+                    ? _buildNoCompletedTasksMessage()
                     : ListView.builder(
                         itemCount: tarefasRealizadas.length,
                         itemBuilder: (context, index) => _buildTarefaItem(tarefasRealizadas[index], true),
@@ -220,6 +295,7 @@ class _TarefasPageState extends State<TarefasPage> with SingleTickerProviderStat
         ],
       ),
       backgroundColor: Colors.black,
+      bottomNavigationBar: BottomMenu(currentIndex: 1),
     );
   }
 }

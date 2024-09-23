@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'tarefas_page.dart';          // Importa a página de Tarefas
 import 'dias_anteriores_page.dart'; // Importa a página de Dias Anteriores
 import 'pomodoro_page.dart';        // Importa a página de Pomodoro
+import 'bottom_menu.dart';
 
 class OptionsPage extends StatelessWidget {
   const OptionsPage({Key? key}) : super(key: key);
@@ -75,6 +76,7 @@ class OptionsPage extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.black,  // Fundo escuro para manter o design minimalista e futurista
+      bottomNavigationBar: BottomMenu(currentIndex: 3)
     );
   }
 }

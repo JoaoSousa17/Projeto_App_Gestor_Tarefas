@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'supabase_service.dart';
 import 'tarefas_page.dart';
+import 'bottom_menu.dart';
 
 class DiasAnterioresPage extends StatefulWidget {
   @override
@@ -103,6 +104,7 @@ class _DiasAnterioresPageState extends State<DiasAnterioresPage> with SingleTick
               ],
             ),
       backgroundColor: Colors.black,
+      bottomNavigationBar: BottomMenu(currentIndex: 2),
     );
   }
 

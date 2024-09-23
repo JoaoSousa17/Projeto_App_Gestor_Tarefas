@@ -70,7 +70,7 @@ class SupabaseService {
       await supabaseClient
           .from('perfil')
           .update({'pontuacao': novaPontuacao})
-          .eq('id', perfil['id']); // Adicionando a cláusula WHERE
+          .eq('id', perfil['id']);
       return novaPontuacao;
     } catch (e) {
       print('Erro ao atualizar pontuação do perfil: $e');
@@ -80,7 +80,6 @@ class SupabaseService {
 
   Future<void> atualizarTarefasRealizadas(String data, List<Map<String, dynamic>> tarefasRealizadas, int pontuacaoDelta) async {
     try {
-      // Primeiro, atualizamos as tarefas realizadas
       await supabaseClient
           .from('dados_diarios')
           .update({
@@ -91,7 +90,6 @@ class SupabaseService {
           })
           .eq('data', data);
       
-      // Em seguida, atualizamos a pontuação do perfil
       await atualizarPontuacaoPerfil(pontuacaoDelta);
     } catch (e) {
       print('Erro ao atualizar tarefas realizadas e pontuação: $e');
@@ -139,6 +137,29 @@ class SupabaseService {
     }
   }
 
+  Future<void> adicionarTarefa(String nome, String categoria, int pontuacao) async {
+    try {
+      await supabaseClient.from('tarefas').insert({
+        'nome': nome,
+        'categoria': categoria,
+        'pontuacao': pontuacao,
+        'status': true,
+      });
+    } catch (e) {
+      print('Erro ao adicionar tarefa: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> removerTarefa(String id) async {
+    try {
+      await supabaseClient.from('tarefas').delete().eq('id', id);
+    } catch (e) {
+      print('Erro ao remover tarefa: $e');
+      rethrow;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> buscarTarefasDisponiveis() async {
     try {
       final response = await supabaseClient
@@ -147,10 +168,8 @@ class SupabaseService {
           .eq('status', true)
           .order('nome', ascending: true);
 
-      // Convertemos explicitamente para o tipo correto
       return (response as List<dynamic>).map((item) {
         return Map<String, dynamic>.from(item).map((key, value) {
-          // Garantimos que o ID seja sempre uma string
           if (key == 'id') {
             return MapEntry(key, value.toString());
           }
