@@ -110,6 +110,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ],
                             ),
+                            SizedBox(height: 10),
+                            Text(
+                              'Próximo nível em ${perfilUsuario['pontos_para_proximo_nivel'] ?? 0} pontos',
+                              style: TextStyle(color: Colors.grey[400], fontSize: 14),
+                            ),
                           ],
                         ),
                       ),

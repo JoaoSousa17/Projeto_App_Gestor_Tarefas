@@ -1,4 +1,5 @@
 import 'package:supabase/supabase.dart';
+import 'Auxiliar/level_calculator.dart';
 
 class SupabaseService {
   final SupabaseClient supabaseClient;
@@ -67,13 +68,16 @@ class SupabaseService {
         throw Exception('Perfil não encontrado');
       }
       int novaPontuacao = (perfil['pontuacao'] ?? 0) + pontuacaoDelta;
-      await supabaseClient
-          .from('perfil')
-          .update({'pontuacao': novaPontuacao})
-          .eq('id', perfil['id']);
+      int novoNivel = LevelCalculator.calculateLevel(novaPontuacao);
+      
+      await supabaseClient.from('perfil').update({
+        'pontuacao': novaPontuacao,
+        'nivel': novoNivel,
+      }).eq('id', perfil['id']);
+      
       return novaPontuacao;
     } catch (e) {
-      print('Erro ao atualizar pontuação do perfil: $e');
+      print('Erro ao atualizar pontuação e nível do perfil: $e');
       rethrow;
     }
   }
@@ -126,11 +130,19 @@ class SupabaseService {
 
   Future<Map<String, dynamic>> buscarPerfil() async {
     try {
-      final response = await supabaseClient
-          .from('perfil')
-          .select()
-          .single();
-      return response ?? {};
+      final response = await supabaseClient.from('perfil').select().single();
+      if (response != null) {
+        int pontuacao = response['pontuacao'] ?? 0;
+        int nivel = LevelCalculator.calculateLevel(pontuacao);
+        int pontosParaProximoNivel = LevelCalculator.pointsToNextLevel(pontuacao);
+        
+        return {
+          ...response,
+          'nivel': nivel,
+          'pontos_para_proximo_nivel': pontosParaProximoNivel,
+        };
+      }
+      return {};
     } catch (e) {
       print('Erro ao buscar perfil: $e');
       return {};
